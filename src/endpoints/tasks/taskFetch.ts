@@ -3,7 +3,7 @@ import {
 	OpenAPIRouteSchema,
 	Path,
 } from "@cloudflare/itty-router-openapi";
-import { Task } from "../types";
+import { Task } from "../../types/types";
 
 export class TaskFetch extends OpenAPIRoute {
 	static schema: OpenAPIRouteSchema = {

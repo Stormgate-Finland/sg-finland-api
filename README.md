@@ -1,3 +1,7 @@
+# REST API for Stormgate.fi using Stormgate World's API
+
+Stormgate World API docs: https://api.stormgateworld.com/rapidoc
+
 # Cloudflare Workers OpenAPI 3.1
 
 This is a Cloudflare Worker with OpenAPI 3.1 using [itty-router-openapi](https://github.com/cloudflare/itty-router-openapi).
