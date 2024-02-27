@@ -58,6 +58,9 @@ export class CountriesList extends OpenAPIRoute {
     let filteredData = data;
     if (codes) {
       filteredData = data.filter((country) => codes.includes(country.code));
+      if (codes.includes("NULL")) {
+        filteredData.push(data.find((country) => country.code === null));
+      }
     }
     return filteredData;
   }
