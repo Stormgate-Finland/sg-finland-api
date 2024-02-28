@@ -16,7 +16,6 @@ export async function cacheFetch<T = unknown>(
   if (!response) {
     const res = await fetch(request);
 
-    console.log("cacheFetch", res.status, cacheKey.url, cacheTime);
     // Must use Response constructor to inherit all of response's fields
     response = new Response(res.body as ReadableStream<Uint8Array>, res);
     if (res.status !== 200) {
