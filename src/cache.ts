@@ -16,8 +16,12 @@ export async function cacheFetch<T = unknown>(
   if (!response) {
     const res = await fetch(request);
 
+    console.log("cacheFetch", res.status, cacheKey.url, cacheTime);
     // Must use Response constructor to inherit all of response's fields
     response = new Response(res.body as ReadableStream<Uint8Array>, res);
+    if (res.status !== 200) {
+      return response;
+    }
 
     // Any changes made to the response here will be reflected in the cached value
     response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);

@@ -1,3 +1,5 @@
-import { CountriesList } from "./countries";
+import { Countries } from "./countries";
+import { Activity } from "./activity";
+import { StatisticsRanked1v1 } from "./ranked1v1";
 
-export { CountriesList};
+export { Countries, Activity, StatisticsRanked1v1 };

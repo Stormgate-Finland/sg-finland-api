@@ -3,17 +3,25 @@ import {
   OpenAPIRouteSchema,
   Query,
 } from "@cloudflare/itty-router-openapi";
-import { StatisticsCountries } from "@/types/types";
+import { StatisticsCountriesResponse } from "@/types/statistics";
 import { cacheFetch } from "@/cache";
-import { countriesReq } from "@/sgw/api";
+import { SGWStatistics } from "@/lib/stormgateworld";
 
-export class CountriesList extends OpenAPIRoute {
+export class Countries extends OpenAPIRoute {
   static schema: OpenAPIRouteSchema = {
     tags: ["Statistics/Countries"],
     summary: "List number of players in countries",
     parameters: {
       codes: Query(Array(String), {
         description: "Filter by country codes",
+        required: false,
+      }),
+      since: Query(Date, {
+        description: "Show stats since this date",
+        required: false,
+      }),
+      until: Query(Date, {
+        description: "Show stats until this date",
         required: false,
       }),
     },
@@ -23,7 +31,7 @@ export class CountriesList extends OpenAPIRoute {
         schema: {
           success: Boolean,
           error: String,
-          result: StatisticsCountries,
+          result: StatisticsCountriesResponse,
         },
       },
     },
@@ -35,14 +43,17 @@ export class CountriesList extends OpenAPIRoute {
     context: ExecutionContext,
     data: Record<string, any>
   ) {
-    const response = await cacheFetch(countriesReq(), context);
+    const response = await cacheFetch(
+      SGWStatistics.countries(data.query),
+      context
+    );
     if (response.status !== 200) {
       return {
         success: false,
         error: "Failed to fetch data",
       };
     }
-    const body = (await response.json()) as typeof StatisticsCountries;
+    const body = (await response.json()) as typeof StatisticsCountriesResponse;
 
     return {
       success: true,
@@ -51,7 +62,7 @@ export class CountriesList extends OpenAPIRoute {
   }
 
   private filter(
-    data: typeof StatisticsCountries.countries,
+    data: typeof StatisticsCountriesResponse.countries,
     query: Record<string, any>
   ) {
     const { codes } = query;
