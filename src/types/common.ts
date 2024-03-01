@@ -7,3 +7,13 @@ export const Task = {
   completed: Boolean,
   due_date: new DateTime(),
 };
+
+export type ApiResponse<T> =
+  | {
+      success: true;
+      result: T;
+    }
+  | {
+      success: false;
+      error: string;
+    };

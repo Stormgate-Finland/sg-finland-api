@@ -56,21 +56,9 @@ export class PlayerMatches extends OpenAPIRoute {
     data: Record<string, any>
   ) {
     const { playerId } = data.params;
-    const response = await cacheFetch(
+    return await cacheFetch<typeof PlayerMatchesResponse>(
       SGWPlayers.matches(playerId, data.query),
       context
     );
-    if (response.status !== 200) {
-      return {
-        success: false,
-        error: "Failed to fetch data",
-      };
-    }
-    const body = (await response.json()) as typeof PlayerMatchesResponse;
-
-    return {
-      success: true,
-      result: body,
-    };
   }
 }

@@ -40,21 +40,9 @@ export class Activity extends OpenAPIRoute {
     context: ExecutionContext,
     data: Record<string, any>
   ) {
-    const response = await cacheFetch(
+    return await cacheFetch<typeof StatisticsActivityResponse>(
       SGWStatistics.activity(data.query),
       context
     );
-    if (response.status !== 200) {
-      return {
-        success: false,
-        error: "Failed to fetch data",
-      };
-    }
-    const body = (await response.json()) as typeof StatisticsActivityResponse;
-
-    return {
-      success: true,
-      result: body,
-    };
   }
 }

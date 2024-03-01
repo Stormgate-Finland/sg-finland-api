@@ -44,21 +44,9 @@ export class StatisticsRanked1v1 extends OpenAPIRoute {
     context: ExecutionContext,
     data: Record<string, any>
   ) {
-    const response = await cacheFetch(
+    return await cacheFetch<typeof StatisticsRanked1v1Response>(
       SGWStatistics.ranked1v1(data.query),
       context
     );
-    if (response.status !== 200) {
-      return {
-        success: false,
-        error: "Failed to fetch data",
-      };
-    }
-    const body = (await response.json()) as typeof StatisticsRanked1v1Response;
-
-    return {
-      success: true,
-      result: body,
-    };
   }
 }

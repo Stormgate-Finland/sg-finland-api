@@ -35,18 +35,9 @@ export class PlayerLastMatch extends OpenAPIRoute {
     data: Record<string, any>
   ) {
     const { playerId } = data.params;
-    const response = await cacheFetch(SGWPlayers.lastMatch(playerId), context);
-    if (response.status !== 200) {
-      return {
-        success: false,
-        error: "Failed to fetch data",
-      };
-    }
-    const body = (await response.json()) as typeof MatchResponse;
-
-    return {
-      success: true,
-      result: body,
-    };
+    return await cacheFetch<typeof MatchResponse>(
+      SGWPlayers.lastMatch(playerId),
+      context
+    );
   }
 }

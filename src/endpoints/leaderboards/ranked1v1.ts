@@ -57,21 +57,9 @@ export class LeaderboardRanked1v1 extends OpenAPIRoute {
     context: ExecutionContext,
     data: Record<string, any>
   ) {
-    const response = await cacheFetch(
+    return await cacheFetch<typeof LeaderboardResponse>(
       SGWLeaderboards.ranked1v1(data.query),
       context
     );
-    if (response.status !== 200) {
-      return {
-        success: false,
-        error: "Failed to fetch data",
-      };
-    }
-    const body = (await response.json()) as typeof LeaderboardResponse;
-
-    return {
-      success: true,
-      result: body,
-    };
   }
 }

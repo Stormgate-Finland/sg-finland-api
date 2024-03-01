@@ -10,6 +10,6 @@ export const statisticsRouter = OpenAPIRouter({
   base: "/api/statistics",
 });
 
-statisticsRouter.get("/api/statistics/countries", Countries);
-statisticsRouter.get("/api/statistics/acticity", Activity);
-statisticsRouter.get("/api/statistics/ranked1v1", StatisticsRanked1v1);
+statisticsRouter.get("/countries", Countries);
+statisticsRouter.get("/acticity", Activity);
+statisticsRouter.get("/ranked1v1", StatisticsRanked1v1);

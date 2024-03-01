@@ -43,22 +43,19 @@ export class Countries extends OpenAPIRoute {
     context: ExecutionContext,
     data: Record<string, any>
   ) {
-    const response = await cacheFetch(
+    return await cacheFetch<typeof StatisticsCountriesResponse>(
       SGWStatistics.countries(data.query),
-      context
+      context,
+      (body) => {
+        return {
+          success: true,
+          result: {
+            ...body,
+            countries: this.filter(body.countries, data.query),
+          },
+        };
+      }
     );
-    if (response.status !== 200) {
-      return {
-        success: false,
-        error: "Failed to fetch data",
-      };
-    }
-    const body = (await response.json()) as typeof StatisticsCountriesResponse;
-
-    return {
-      success: true,
-      result: { ...body, countries: this.filter(body.countries, data.query) },
-    };
   }
 
   private filter(
@@ -68,7 +65,10 @@ export class Countries extends OpenAPIRoute {
     const { codes } = query;
     let filteredData = data;
     if (codes) {
-      filteredData = data.filter((country) => codes.includes(country.code));
+      const upperCodes = codes.map((code: string) => code.toUpperCase());
+      filteredData = data.filter((country) =>
+        upperCodes.includes(country.code)
+      );
       if (codes.includes("NULL")) {
         filteredData.push(data.find((country) => country.code === null));
       }
