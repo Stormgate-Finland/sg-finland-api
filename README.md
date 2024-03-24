@@ -20,6 +20,14 @@ To get started see: https://developers.cloudflare.com/workers/get-started/guide/
 
 # Setup
 
+Create `.dev.vars` file which is for local secrets with:
+
+```
+cp .dev.vars.example .dev.vars
+```
+
+And fill in the variables.
+
 Create `wrangler.toml` file with:
 
 ```
@@ -52,6 +60,28 @@ npm run dev
 
 ```
 npm run deploy
+```
+
+Remmebr to add secrets to CloudFare with:
+
+```
+wrangler secret put <ENV_NAME>
+```
+
+# DB Migrations
+
+Refer to https://developers.cloudflare.com/d1/reference/migrations/
+
+Run local migrations with:
+
+```
+npm run migrations:apply
+```
+
+Run remote migrations with:
+
+```
+npm run migrations:apply -- --remote
 ```
 
 # Eternal API docs
