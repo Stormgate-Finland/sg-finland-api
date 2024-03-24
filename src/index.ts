@@ -1,9 +1,10 @@
 import { OpenAPIRouter } from "@cloudflare/itty-router-openapi";
 // import { TaskList, TaskCreate, TaskFetch, TaskDelete } from "@/endpoints/tasks";
 
-import { LeaderboardRanked1v1 } from "@/endpoints/leaderboards";
+import { LeaderboardRanked1v1 } from "@/endpoints/ladder/leaderboards";
 import { playersRouter } from "./routers/playersRouter";
-import { statisticsRouter } from "./routers/statisticsRuoter";
+import { statisticsRouter } from "./routers/statisticsRouter";
+import { streamsRouter } from "./routers/streamsRouter";
 
 export const router = OpenAPIRouter({
   docs_url: "/",
@@ -14,9 +15,11 @@ export const router = OpenAPIRouter({
 // router.get("/api/tasks/:taskSlug/", TaskFetch);
 // router.delete("/api/tasks/:taskSlug/", TaskDelete);
 
-router.get("/api/leaderboard/1v1", LeaderboardRanked1v1);
-router.get("/api/statistics/*", statisticsRouter);
-router.get("/api/players/*", playersRouter);
+router.get("/api/ladder/leaderboard/1v1", LeaderboardRanked1v1);
+router.get("/api/ladder/statistics/*", statisticsRouter);
+router.get("/api/ladder/players/*", playersRouter);
+
+router.all("/api/streams/*", streamsRouter);
 
 // 404 for everything else
 router.all("*", () =>

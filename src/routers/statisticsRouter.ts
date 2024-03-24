@@ -4,10 +4,10 @@ import {
   Countries,
   Activity,
   StatisticsRanked1v1,
-} from "@/endpoints/statistics";
+} from "@/endpoints/ladder/statistics";
 
 export const statisticsRouter = OpenAPIRouter({
-  base: "/api/statistics",
+  base: "/api/ladder/statistics",
 });
 
 statisticsRouter.get("/countries", Countries);

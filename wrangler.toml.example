@@ -1,0 +1,14 @@
+name = "sg-finland-api"
+main = "src/index.ts"
+compatibility_date = "2024-02-23"
+
+kv_namespaces = [
+    { binding = "KV", id = "..." }
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sg-finland-d1"
+database_id = "..."
+migrations_table = "d1_migrations"
+migrations_dir = "migrations"

@@ -6,10 +6,10 @@ import {
   PlayerMatches,
   PlayerMatchups,
   PlayerOpponents,
-} from "@/endpoints/players";
+} from "@/endpoints/ladder/players";
 
 export const playersRouter = OpenAPIRouter({
-  base: "/api/players",
+  base: "/api/ladder/players",
 });
 
 playersRouter.get("/:playerId", Player);

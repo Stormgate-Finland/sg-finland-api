@@ -3,17 +3,23 @@ import { getResponseBody } from "./utils/response";
 
 const defaultOptions = { cacheTime: 60 * 10 }; // 10 minutes
 
+const getCacheKey = (request: Request) => {
+  const url = new URL(request.url);
+
+  // Construct the cache key from the cache URL
+  const cacheKey = new Request(url.toString(), request);
+  return cacheKey;
+};
+
+// Fetch request and cache it
 export async function cacheFetch<T = unknown>(
   request: Request,
   context: ExecutionContext,
-  handler?: (body: T) => ApiResponse<T> | Promise<ApiResponse<T>>,
+  bodyHandler?: (body: T) => ApiResponse<T> | Promise<ApiResponse<T>>,
   options?: typeof defaultOptions
 ) {
-  const cacheUrl = new URL(request.url);
-  const cacheTime = options?.cacheTime || defaultOptions.cacheTime;
-
-  // Construct the cache key from the cache URL
-  const cacheKey = new Request(cacheUrl.toString(), request);
+  const cacheTime = options.cacheTime || defaultOptions.cacheTime;
+  const cacheKey = getCacheKey(request);
   const cache = caches.default;
 
   let response: Response = await cache.match(cacheKey);
@@ -23,7 +29,7 @@ export async function cacheFetch<T = unknown>(
 
     const body = await getResponseBody<T>(
       new Response(res.body as ReadableStream<any>, res),
-      handler
+      bodyHandler
     );
 
     // Must use Response constructor to inherit all of response's fields
@@ -31,7 +37,29 @@ export async function cacheFetch<T = unknown>(
 
     // Any changes made to the response here will be reflected in the cached value
     response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);
+    context.waitUntil(cache.put(cacheKey, response.clone()));
+  }
+  return response;
+}
 
+// Cache the response of custom event handler
+export async function cacheResult<T = unknown>(
+  request: Request,
+  context: ExecutionContext,
+  handler?: () => ApiResponse<T> | Promise<ApiResponse<T>>,
+  options?: typeof defaultOptions
+) {
+  const cacheTime = options.cacheTime || defaultOptions.cacheTime;
+  const cacheKey = getCacheKey(request);
+  const cache = caches.default;
+
+  let response: Response = await cache.match(cacheKey);
+
+  if (!response) {
+    const body = await handler();
+
+    response = new Response(JSON.stringify(body));
+    response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);
     context.waitUntil(cache.put(cacheKey, response.clone()));
   }
   return response;

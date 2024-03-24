@@ -2,10 +2,6 @@ import { queryString } from "@/utils/query";
 import { sgwConfig } from ".";
 import { League } from "./types";
 
-const toDateString = (date?: Date) => {
-  return date?.toISOString().split("T")[0] ?? "";
-};
-
 export class SGWStatistics {
   static countries = (params?: { since?: Date; until?: Date }) => {
     const query = queryString(params);
