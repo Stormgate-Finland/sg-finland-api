@@ -21,6 +21,7 @@ export type ApiResponse<T> =
 export interface Env {
   TWITCH_CLIENT_ID: string;
   TWITCH_CLIENT_SECRET: string;
+  API_KEY: string;
   KV: KVNamespace;
   DB: D1Database;
 }
