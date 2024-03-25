@@ -16,9 +16,9 @@ export async function cacheFetch<T = unknown>(
   request: Request,
   context: ExecutionContext,
   bodyHandler?: (body: T) => ApiResponse<T> | Promise<ApiResponse<T>>,
-  options?: typeof defaultOptions
+  options = defaultOptions
 ) {
-  const cacheTime = options.cacheTime || defaultOptions.cacheTime;
+  const cacheTime = options.cacheTime;
   const cacheKey = getCacheKey(request);
   const cache = caches.default;
 
