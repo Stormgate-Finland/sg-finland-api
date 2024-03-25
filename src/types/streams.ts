@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+const StreamUrlValidator = z
+  .string()
+  .regex(/^https:\/\/(www\.)?twitch\.tv\/\w+/)
+  .or(z.string().regex(/^https:\/\/(www\.)?youtube\.com\/@\w+/));
+
 export const StreamLiveResponse = z.array(
   z.object({
     id: z.number().int(),
@@ -15,14 +20,14 @@ export type StreamLiveResponseType = z.infer<typeof StreamLiveResponse>;
 export const StreamCreateRequest = z
   .object({
     id: z.number().int(),
-    url: z.string(),
+    url: StreamUrlValidator,
   })
   .required();
 export type StreamCreateRequestType = z.infer<typeof StreamCreateRequest>;
 
 export const StreamUpdateRequest = z
   .object({
-    url: z.string(),
+    url: StreamUrlValidator,
   })
   .required();
 export type StreamUpdateRequestType = z.infer<typeof StreamUpdateRequest>;

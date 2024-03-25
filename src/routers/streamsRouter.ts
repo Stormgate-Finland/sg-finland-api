@@ -5,6 +5,7 @@ import {
   StreamDelete,
   StreamList,
   StreamUpdate,
+  StreamUpsert,
 } from "@/endpoints/streams";
 
 export const streamsRouter = OpenAPIRouter({
@@ -14,5 +15,6 @@ export const streamsRouter = OpenAPIRouter({
 streamsRouter.get("/live", StreamLive);
 streamsRouter.get("/", StreamList);
 streamsRouter.post("/create", StreamCreate);
+streamsRouter.post("/upsert", StreamUpsert);
 streamsRouter.put("/update/:id", StreamUpdate);
-streamsRouter.delete("/update/:id", StreamDelete);
+streamsRouter.delete("/delete/:id", StreamDelete);

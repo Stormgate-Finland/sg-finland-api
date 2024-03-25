@@ -107,7 +107,6 @@ export class Twitch {
           },
         });
         const res = await fetch(req);
-        console.log(res);
         const body = (await res.json()) as TwitchUsersResponse;
         users = users.concat(body.data);
       })

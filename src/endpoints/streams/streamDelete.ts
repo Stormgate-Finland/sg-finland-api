@@ -7,8 +7,9 @@ export class StreamDelete extends OpenAPIRoute {
     tags: ["Streams/Delete"],
     summary: "Delete existing Stream",
     parameters: {
-      id: Path(z.number().int(), {
+      id: Path(z.string(), {
         description: "Stream id",
+        pattern: /\d+/,
       }),
     },
     responses: {
@@ -34,7 +35,7 @@ export class StreamDelete extends OpenAPIRoute {
     context: ExecutionContext,
     data: DataOf<typeof StreamDelete.schema>
   ) {
-    const { id } = data.params;
+    const id = Number(data.params.id);
 
     try {
       const info = await env.DB.prepare("DELETE FROM streams WHERE id = ?")

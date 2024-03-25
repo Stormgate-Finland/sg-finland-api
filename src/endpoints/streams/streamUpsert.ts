@@ -1,34 +1,27 @@
-import { DataOf, OpenAPIRoute, Path } from "@cloudflare/itty-router-openapi";
+import { DataOf, OpenAPIRoute } from "@cloudflare/itty-router-openapi";
 import {
   StreamResponse,
+  StreamCreateRequest,
   StreamResponseType,
-  StreamUpdateRequest,
 } from "@/types/streams";
-import { z } from "zod";
 import { Env } from "@/types/common";
 import { Twitch } from "@/lib/twitch/client";
 
-export class StreamUpdate extends OpenAPIRoute {
+export class StreamUpsert extends OpenAPIRoute {
   static schema = {
-    tags: ["Streams/Update"],
-    summary: "Update existing Stream",
-    parameters: {
-      id: Path(z.string(), {
-        description: "Stream id",
-        pattern: /\d+/,
-      }),
-    },
-    requestBody: StreamUpdateRequest,
+    tags: ["Streams/Upsert"],
+    summary: "Create a new Stream or update an existing one",
+    requestBody: StreamCreateRequest,
     responses: {
       "200": {
-        description: "Returns the updated stream",
+        description: "Returns the created/updated stream",
         schema: {
           success: Boolean,
           result: StreamResponse,
         },
       },
       "404": {
-        description: "Stream not found",
+        description: "Stream not found from external API",
         schema: {
           success: Boolean,
           error: String,
@@ -41,20 +34,15 @@ export class StreamUpdate extends OpenAPIRoute {
     request: Request,
     env: Env,
     context: ExecutionContext,
-    data: DataOf<typeof StreamUpdate.schema>
+    data: DataOf<typeof StreamUpsert.schema>
   ) {
-    const id = Number(data.params.id);
     const { body } = data;
 
-    if ((await this.streamExists(env, id)) === false) {
-      return Response.json(
-        {
-          success: false,
-          error: "Stream not found",
-        },
-        { status: 404 }
-      );
-    }
+    // Check if stream already exists
+    const result = await env.DB.prepare("SELECT id FROM streams WHERE id = ?")
+      .bind(body.id)
+      .first<{ id: number }>();
+    const isExistingStream = !!result?.id;
 
     // Twitch only for now, TODO youtube
     const twitch = new Twitch(env);
@@ -69,8 +57,8 @@ export class StreamUpdate extends OpenAPIRoute {
       );
     }
 
-    const updatedStream = {
-      id,
+    const newStream = {
+      id: body.id,
       url: streamDetails.url,
       avatarUrl: streamDetails.avatarUrl,
       providerId: streamDetails.providerId,
@@ -78,29 +66,40 @@ export class StreamUpdate extends OpenAPIRoute {
     };
 
     try {
-      await this.updateStream(env, updatedStream);
+      if (isExistingStream) {
+        await this.updateStream(env, newStream);
+      } else {
+        await this.insertStream(env, newStream);
+      }
     } catch (e: any) {
       console.error(e);
       return Response.json(
         {
           success: false,
-          error: "Stream update failed",
+          error: "Stream insert failed",
         },
-        { status: 500 }
+        { status: 409 }
       );
     }
 
     return {
       success: true,
-      result: updatedStream,
+      result: newStream,
     };
   }
 
-  private async streamExists(env: Env, id: number) {
-    const result = await env.DB.prepare("SELECT id FROM streams WHERE id = ?")
-      .bind(id)
-      .first<{ id: number }>();
-    return !!result?.id;
+  private async insertStream(env: Env, stream: StreamResponseType) {
+    await env.DB.prepare(
+      "INSERT INTO streams (id, provider_id, provider, url, avatar_url) VALUES (?, ?, ?, ?, ?)"
+    )
+      .bind(
+        stream.id,
+        stream.providerId,
+        stream.provider,
+        stream.url ?? null,
+        stream.avatarUrl ?? null
+      )
+      .run();
   }
 
   private async updateStream(env: Env, stream: StreamResponseType) {
