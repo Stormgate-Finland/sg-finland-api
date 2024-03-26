@@ -4,7 +4,7 @@ import {
   Path,
 } from "@cloudflare/itty-router-openapi";
 import { MatchResponse } from "@/types/players";
-import { cacheFetch } from "@/cache";
+import { cacheFetch } from "@/utils/cache";
 import { SGWPlayers } from "@/lib/stormgateworld";
 
 export class PlayerLastMatch extends OpenAPIRoute {

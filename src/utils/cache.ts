@@ -1,5 +1,5 @@
-import { ApiResponse } from "./types/common";
-import { getResponseBody } from "./utils/response";
+import { ApiResponse } from "../types/common";
+import { getResponseBody } from "./response";
 
 const defaultOptions = { cacheTime: 60 * 10 }; // 10 minutes
 

@@ -5,7 +5,7 @@ import {
   Query,
 } from "@cloudflare/itty-router-openapi";
 import { LeaderboardResponse } from "@/types/leaderboards";
-import { cacheFetch } from "@/cache";
+import { cacheFetch } from "@/utils/cache";
 import { SGWLeaderboards } from "@/lib/stormgateworld";
 import { LeaderboardsOrder, Race } from "@/lib/stormgateworld/types";
 

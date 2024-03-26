@@ -6,7 +6,7 @@ import {
   Query,
 } from "@cloudflare/itty-router-openapi";
 import { PlayerMatchesResponse } from "@/types/players";
-import { cacheFetch } from "@/cache";
+import { cacheFetch } from "@/utils/cache";
 import { SGWPlayers } from "@/lib/stormgateworld";
 import { Race } from "@/lib/stormgateworld/types";
 

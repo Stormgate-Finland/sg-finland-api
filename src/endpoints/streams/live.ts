@@ -2,7 +2,7 @@ import {
   OpenAPIRoute,
   OpenAPIRouteSchema,
 } from "@cloudflare/itty-router-openapi";
-import { cacheResult } from "@/cache";
+import { cacheResult } from "@/utils/cache";
 import { StreamLiveResponse as StreamsLiveResponse } from "@/types/streams";
 import { Env } from "@/types/common";
 import { Twitch } from "@/lib/twitch/client";

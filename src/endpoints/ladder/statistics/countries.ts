@@ -4,7 +4,7 @@ import {
   Query,
 } from "@cloudflare/itty-router-openapi";
 import { StatisticsCountriesResponse } from "@/types/statistics";
-import { cacheFetch } from "@/cache";
+import { cacheFetch } from "@/utils/cache";
 import { SGWStatistics } from "@/lib/stormgateworld";
 
 export class Countries extends OpenAPIRoute {

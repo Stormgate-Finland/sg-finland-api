@@ -4,7 +4,7 @@ import {
   Path,
 } from "@cloudflare/itty-router-openapi";
 import { PlayerResponse } from "@/types/players";
-import { cacheFetch } from "@/cache";
+import { cacheFetch } from "@/utils/cache";
 import { SGWPlayers } from "@/lib/stormgateworld";
 
 export class Player extends OpenAPIRoute {

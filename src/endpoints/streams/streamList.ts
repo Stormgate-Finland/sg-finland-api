@@ -1,7 +1,7 @@
 import { DataOf, OpenAPIRoute } from "@cloudflare/itty-router-openapi";
 import { StreamListResponse } from "@/types/streams";
 import { Env } from "@/types/common";
-import { cacheResult } from "@/cache";
+import { cacheResult } from "@/utils/cache";
 
 export class StreamList extends OpenAPIRoute {
   static schema = {

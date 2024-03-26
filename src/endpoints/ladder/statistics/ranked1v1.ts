@@ -5,7 +5,7 @@ import {
   Query,
 } from "@cloudflare/itty-router-openapi";
 import { StatisticsRanked1v1Response } from "@/types/statistics";
-import { cacheFetch } from "@/cache";
+import { cacheFetch } from "@/utils/cache";
 import { SGWStatistics } from "@/lib/stormgateworld";
 import { League } from "@/lib/stormgateworld/types";
 
