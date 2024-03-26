@@ -1,7 +1,5 @@
 import { OpenAPIRouter } from "@cloudflare/itty-router-openapi";
 import { LeaderboardRanked1v1 } from "@/endpoints/ladder/leaderboards";
-import { playersRouter } from "./routers/playersRouter";
-import { statisticsRouter } from "./routers/statisticsRouter";
 import { streamsRouter } from "./routers/streamsRouter";
 import { authenticateRequest } from "./middleware/auth";
 
@@ -26,9 +24,13 @@ router.all("/api/*", authenticateRequest);
 
 // Routes
 router.get("/api/ladder/leaderboard/1v1", LeaderboardRanked1v1);
+router.all("/api/streams/*", streamsRouter);
+
+/*
+2024-03-23: These endspoints have been disabled by Frost Giant
 router.get("/api/ladder/statistics/*", statisticsRouter);
 router.get("/api/ladder/players/*", playersRouter);
-router.all("/api/streams/*", streamsRouter);
+*/
 
 // 404 for everything else
 router.all("*", () =>
