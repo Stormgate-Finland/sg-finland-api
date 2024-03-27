@@ -16,6 +16,6 @@
 		"@cloudflare/workers-types": "^4.20240222.0",
 		"@types/node": "^20.5.7",
 		"@types/service-worker-mock": "^2.0.1",
-		"wrangler": "^3.37.0"
+		"wrangler": "^3.38.0"
 	}
 }
