@@ -37,6 +37,7 @@ export async function cacheFetch<T = unknown>(
 
     // Any changes made to the response here will be reflected in the cached value
     response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);
+    response.headers.append("Content-Type", "application/json");
     context.waitUntil(cache.put(cacheKey, response.clone()));
   }
   return response;
@@ -60,6 +61,7 @@ export async function cacheResult<T = unknown>(
 
     response = new Response(JSON.stringify(body));
     response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);
+    response.headers.set("Content-Type", "application/json");
     context.waitUntil(cache.put(cacheKey, response.clone()));
   }
   return response;
