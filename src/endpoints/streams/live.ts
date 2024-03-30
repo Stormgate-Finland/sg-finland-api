@@ -34,21 +34,20 @@ export class StreamLive extends OpenAPIRoute {
     context: ExecutionContext,
     data: DataOf<typeof StreamLive.schema>
   ) {
-    const twitch = new Twitch(env);
-
-    return await cacheResult<StreamLiveResponseType>(
+    return await cacheResult(
       request,
       context,
       async () => {
+        const twitch = new Twitch(env);
         try {
           const streams = await env.DB.prepare(
             "SELECT provider_id FROM streams WHERE provider = 'twitch'"
           ).all<{ provider_id: string }>();
           if (!streams.results) {
-            return {
+            return Response.json({
               success: true,
               result: [],
-            };
+            });
           }
 
           const liveStreams = await twitch.getStreams(
@@ -62,15 +61,15 @@ export class StreamLive extends OpenAPIRoute {
             thumbnailUrl: Twitch.getTwitchThumbnail(stream.thumbnail_url),
             url: Twitch.getChannelUrl(stream.user_login),
           }));
-          return {
+          return Response.json({
             success: true,
             result,
-          };
+          });
         } catch (error) {
-          return {
+          return Response.json({
             success: false,
             error: error.message,
-          };
+          });
         }
       },
       { cacheTime: 60 * 3 }

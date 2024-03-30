@@ -44,10 +44,10 @@ export async function cacheFetch<T = unknown>(
 }
 
 // Cache the response of custom event handler
-export async function cacheResult<T = unknown>(
+export async function cacheResult(
   request: Request,
   context: ExecutionContext,
-  handler?: () => ApiResponse<T> | Promise<ApiResponse<T>>,
+  handler?: () => Promise<Response>,
   options?: typeof defaultOptions
 ) {
   const cacheTime = options.cacheTime || defaultOptions.cacheTime;
@@ -57,11 +57,8 @@ export async function cacheResult<T = unknown>(
   let response: Response = await cache.match(cacheKey);
 
   if (!response) {
-    const body = await handler();
-
-    response = new Response(JSON.stringify(body));
+    const response = await handler();
     response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);
-    response.headers.set("Content-Type", "application/json");
     context.waitUntil(cache.put(cacheKey, response.clone()));
   }
   return response;

@@ -28,7 +28,7 @@ export class StreamList extends OpenAPIRoute {
     context: ExecutionContext,
     data: DataOf<typeof StreamList.schema>
   ) {
-    return await cacheResult<StreamListResponseType>(
+    return await cacheResult(
       request,
       context,
       async () => {
@@ -49,15 +49,15 @@ export class StreamList extends OpenAPIRoute {
             url: stream.url,
           }));
 
-          return {
+          return Response.json({
             success: true,
             result: result ?? [],
-          };
+          });
         } catch (error) {
-          return {
+          return Response.json({
             success: false,
             error: error.message,
-          };
+          });
         }
       },
       { cacheTime: 60 * 3 }
