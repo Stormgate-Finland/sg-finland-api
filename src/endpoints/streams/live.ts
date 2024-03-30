@@ -1,9 +1,13 @@
 import {
+  DataOf,
   OpenAPIRoute,
   OpenAPIRouteSchema,
 } from "@cloudflare/itty-router-openapi";
 import { cacheResult } from "@/utils/cache";
-import { StreamLiveResponse as StreamsLiveResponse } from "@/types/streams";
+import {
+  StreamLiveResponseType,
+  StreamLiveResponse as StreamsLiveResponse,
+} from "@/types/streams";
 import { Env } from "@/types/common";
 import { Twitch } from "@/lib/twitch/client";
 
@@ -28,14 +32,13 @@ export class StreamLive extends OpenAPIRoute {
     request: Request,
     env: Env,
     context: ExecutionContext,
-    data: Record<string, any>
+    data: DataOf<typeof StreamLive.schema>
   ) {
     const twitch = new Twitch(env);
 
-    return await cacheResult(
+    return await cacheResult<StreamLiveResponseType>(
       request,
       context,
-      //@ts-ignore TODO: Fix this
       async () => {
         try {
           const streams = await env.DB.prepare(

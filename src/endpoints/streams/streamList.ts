@@ -1,5 +1,9 @@
 import { DataOf, OpenAPIRoute } from "@cloudflare/itty-router-openapi";
-import { StreamListResponse } from "@/types/streams";
+import {
+  StreamListResponse,
+  StreamListResponseType,
+  StreamType,
+} from "@/types/streams";
 import { Env } from "@/types/common";
 import { cacheResult } from "@/utils/cache";
 
@@ -24,10 +28,9 @@ export class StreamList extends OpenAPIRoute {
     context: ExecutionContext,
     data: DataOf<typeof StreamList.schema>
   ) {
-    return await cacheResult(
+    return await cacheResult<StreamListResponseType>(
       request,
       context,
-      //@ts-ignore TODO: Fix this
       async () => {
         try {
           const streams = await env.DB.prepare(
@@ -39,9 +42,16 @@ export class StreamList extends OpenAPIRoute {
             url: string;
           }>();
 
+          const result = streams?.results.map((stream) => ({
+            id: stream.id,
+            providerId: stream.provider_id,
+            provider: StreamType.parse(stream.provider),
+            url: stream.url,
+          }));
+
           return {
             success: true,
-            result: streams?.results ?? [],
+            result: result ?? [],
           };
         } catch (error) {
           return {

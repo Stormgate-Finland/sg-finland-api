@@ -43,10 +43,12 @@ export const StreamResponse = z.object({
 });
 export type StreamResponseType = z.infer<typeof StreamResponse>;
 
-export const StreamListResponse = z.object({
-  id: z.number().int(),
-  providerId: z.string(),
-  provider: StreamType,
-  url: z.string(),
-});
+export const StreamListResponse = z.array(
+  z.object({
+    id: z.number().int(),
+    providerId: z.string(),
+    provider: StreamType,
+    url: z.string(),
+  })
+);
 export type StreamListResponseType = z.infer<typeof StreamListResponse>;
