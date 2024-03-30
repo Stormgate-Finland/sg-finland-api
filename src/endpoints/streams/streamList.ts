@@ -49,15 +49,21 @@ export class StreamList extends OpenAPIRoute {
             url: stream.url,
           }));
 
-          return Response.json({
-            success: true,
-            result: result ?? [],
-          });
+          return Response.json(
+            {
+              success: true,
+              result: result ?? [],
+            },
+            { status: 200 }
+          );
         } catch (error) {
-          return Response.json({
-            success: false,
-            error: error.message,
-          });
+          return Response.json(
+            {
+              success: false,
+              error: error.message,
+            },
+            { status: 500 }
+          );
         }
       },
       { cacheTime: 60 * 3 }

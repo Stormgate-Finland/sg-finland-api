@@ -44,10 +44,13 @@ export class StreamLive extends OpenAPIRoute {
             "SELECT provider_id FROM streams WHERE provider = 'twitch'"
           ).all<{ provider_id: string }>();
           if (!streams.results) {
-            return Response.json({
-              success: true,
-              result: [],
-            });
+            return Response.json(
+              {
+                success: true,
+                result: [],
+              },
+              { status: 200 }
+            );
           }
 
           const liveStreams = await twitch.getStreams(
@@ -61,15 +64,21 @@ export class StreamLive extends OpenAPIRoute {
             thumbnailUrl: Twitch.getTwitchThumbnail(stream.thumbnail_url),
             url: Twitch.getChannelUrl(stream.user_login),
           }));
-          return Response.json({
-            success: true,
-            result,
-          });
+          return Response.json(
+            {
+              success: true,
+              result,
+            },
+            { status: 200 }
+          );
         } catch (error) {
-          return Response.json({
-            success: false,
-            error: error.message,
-          });
+          return Response.json(
+            {
+              success: false,
+              error: error.message,
+            },
+            { status: 500 }
+          );
         }
       },
       { cacheTime: 60 * 3 }

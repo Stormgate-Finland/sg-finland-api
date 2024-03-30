@@ -57,7 +57,7 @@ export async function cacheResult(
   let response: Response = await cache.match(cacheKey);
 
   if (!response) {
-    const response = await handler();
+    response = await handler();
     response.headers.append("Cache-Control", `s-maxage=${cacheTime}`);
     context.waitUntil(cache.put(cacheKey, response.clone()));
   }
