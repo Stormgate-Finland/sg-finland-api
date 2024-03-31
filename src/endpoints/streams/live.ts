@@ -4,10 +4,7 @@ import {
   OpenAPIRouteSchema,
 } from "@cloudflare/itty-router-openapi";
 import { cacheResult } from "@/utils/cache";
-import {
-  StreamLiveResponseType,
-  StreamLiveResponse as StreamsLiveResponse,
-} from "@/types/streams";
+import { StreamLiveResponse as StreamsLiveResponse } from "@/types/streams";
 import { Env } from "@/types/common";
 import { Twitch } from "@/lib/twitch/client";
 
@@ -39,10 +36,11 @@ export class StreamLive extends OpenAPIRoute {
       context,
       async () => {
         const twitch = new Twitch(env);
+        type StreamRow = { id: number; provider: string; provider_id: string };
         try {
           const streams = await env.DB.prepare(
-            "SELECT provider_id FROM streams WHERE provider = 'twitch'"
-          ).all<{ provider_id: string }>();
+            "SELECT id, provider, provider_id FROM streams WHERE provider = 'twitch'"
+          ).all<StreamRow>();
           if (!streams.results) {
             return Response.json(
               {
@@ -52,18 +50,24 @@ export class StreamLive extends OpenAPIRoute {
               { status: 200 }
             );
           }
-
           const liveStreams = await twitch.getStreams(
             streams.results.map((stream) => stream.provider_id)
           );
-          const result = liveStreams.map((stream) => ({
-            id: stream.id,
-            name: stream.user_name,
-            title: stream.title,
-            viewers: stream.viewer_count,
-            thumbnailUrl: Twitch.getTwitchThumbnail(stream.thumbnail_url),
-            url: Twitch.getChannelUrl(stream.user_login),
-          }));
+          const result = liveStreams.map((liveStream) => {
+            const dbStream: StreamRow | undefined = streams.results.find(
+              (s) =>
+                s.provider_id === liveStream.user_login &&
+                s.provider === "twitch"
+            );
+            return {
+              id: dbStream?.id,
+              name: liveStream.user_name,
+              title: liveStream.title,
+              viewers: liveStream.viewer_count,
+              thumbnailUrl: Twitch.getTwitchThumbnail(liveStream.thumbnail_url),
+              url: Twitch.getChannelUrl(liveStream.user_login),
+            };
+          });
           return Response.json(
             {
               success: true,
