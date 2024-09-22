@@ -1,21 +1,21 @@
 {
-	"name": "cloudflare-workers-openapi",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"migrations:apply": "wrangler d1 migrations apply sg-finland-d1",
-		"migrations:list": "wrangler d1 migrations list sg-finland-d1"
-	},
-	"dependencies": {
-		"@cloudflare/itty-router-openapi": "^1.1.0"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20240222.0",
-		"@types/node": "^20.5.7",
-		"@types/service-worker-mock": "^2.0.1",
-		"wrangler": "^3.41.0"
-	}
+  "name": "cloudflare-workers-openapi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "migrations:apply": "wrangler d1 migrations apply sg-finland-d1",
+    "migrations:list": "wrangler d1 migrations list sg-finland-d1"
+  },
+  "dependencies": {
+    "@cloudflare/itty-router-openapi": "^1.1.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240919.0",
+    "@types/node": "^20.16.5",
+    "@types/service-worker-mock": "^2.0.1",
+    "wrangler": "^3.78.7"
+  }
 }
